@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <% include ../views/partials/head %>
+</head>
+<body>
+<h1><%= title %></h1>
+<h3><%= page %></h3>
+<div id="container" class="container-fluid p-0">
+    <div class="col-sm-12 p-0">
+        <table class="table table-responsive table-striped table-hover">
+            <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% for(var emailId in users) { %>
+            <tr>
+                <td><%= users[emailId].firstName %></td>
+                <td><%= users[emailId].lastName %></td>
+                <td><%= users[emailId].email %></td>
+                <th>
+                    <a class="btn btn-info" href="/users/edit?email=<%= emailId %>" data-toggle="tooltip"
+                       data-placement="top"
+                       title="Edit"><span class="glyphicon glyphicon-pencil"></span>
+                    </a>
+                    <button class="btn btn-danger" data-id="<%= emailId %>" data-toggle="tooltip" data-placement="top"
+                            title="Delete"><span
+                                class="glyphicon glyphicon-trash"></span></button>
+                </th>
+            </tr>
+            <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+<% include ../views/partials/menu %>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    });
+    $('button.btn-danger').on('click', function () {
+        var email = $(this).attr('data-id');
+        $.ajax({
+            type: 'DELETE',
+            url: '/users/delete',
+            data: {'id': email},
+            success: function (result) {
+                if (result == '200') {
+                    location.reload();
+                }else{
+                    alert("User can not be deleted");
+                }
+            }
+        })
+    });
+</script>
+</body>
+</html>
